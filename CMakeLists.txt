@@ -21,18 +21,21 @@ option(
 option(
     ENABLE_WARNINGS_AS_ERRORS
     "Treat Compiler Warnings As Errors"
-    OFF
+    ON
 )
 
 # ==========================================================
 # Build Configuration
 # ==========================================================
 
+include(cmake/CompilerWarnings.cmake)
+include(cmake/CompilerOptions.cmake)
+include(cmake/Sanitizers.cmake)
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_executable(Allocator-Aware-Complex
+    src/Allocator-Aware-Complex.cpp
 
-add_executable(Allocator-Aware-Complex src/Allocator-Aware-Complex.cpp
+    include/Allocator/Allocator.h
 )
 
 target_include_directories(Allocator-Aware-Complex
@@ -44,10 +47,20 @@ target_link_libraries(Allocator-Aware-Complex
     PRIVATE
 )
 
+# ==========================================================
+# enable public interfaces
+# ==========================================================
+
+enable_warnings(Allocator-Aware-Complex)
+enable_project_options(Allocator-Aware-Complex)
+enable_sanitizers(Allocator-Aware-Complex)
+
 include(GNUInstallDirs)
 install(TARGETS Allocator-Aware-Complex
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-target_sources(Allocator-Aware-Complex PRIVATE)
+target_sources(Allocator-Aware-Complex PRIVATE
+src/Allocator-Aware-Complex.cpp
+)
